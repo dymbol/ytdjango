@@ -1,0 +1,256 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="YTDjango - magic music download from Youtube to your phone">
+    <meta name="author" content="Bartosz Dempc">
+
+
+    <title>YTDjango - magic music download from Youtube to your phone</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Ek+Mukta&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/small-business.css' %}" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    <span id="logo1">
+                    <img src={% static 'img/logo.png' %} height="24px" alt="ytdjango logo">
+                        </span>
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+
+                    <li>
+                        <a href="{% url 'files' %}">Pliki</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'help' %}">Pomoc</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'admin:index' %}" target="_blank">Administracja</a>
+                    </li>
+                    <li>
+                        <div class="dropdown">
+                          <button class="btn btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li class="dropdown-header">
+                                Zalogowany: {{ user.get_username }}
+                            </li>
+                            <li>
+                                <a href="{% url 'user_profile' %}"><span class="glyphicon glyphicon-pencil"></span>&nbspEdycja konta </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logoutuser' %}"><span class="glyphicon glyphicon-log-out"></span>&nbspWyloguj </a>
+                            </li>
+                          </ul>
+                        </div>
+                    </li>
+                    <li>&nbsp</li>
+                    <li>
+                        <div class="dropdown">
+                          <button class="btn btn-xs dropdown-toggle" type="button" id="convert_queue" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <span class="glyphicon glyphicon-info-sign" id="queue_length" aria-hidden="true"></span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <li class="dropdown-header">
+                                Przetwarzane:
+                            </li>
+                              <ul id="list-files_convert"></ul>
+                            <li class="dropdown-header">
+                                Pliki w kolejce:
+                            </li>
+                                <ul id="list-files_queued"></ul>
+                            <li class="dropdown-header">
+                                Zakończone niepowodzeniem:
+                            </li>
+
+                              <ul id="list-files_errors"></ul>
+                              <li class="dropdown-header">
+                                Zakończone powodzeniem (ostatnie 5):
+                            </li>
+                              <ul id="list-files_converted"></ul>
+
+
+                          </ul>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+         {% for message in messages %}
+                {% if  message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                    <div class="alert alert-info alert-dismissable">
+                {% elif  message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="alert alert-danger" role="alert">
+                {% endif %}
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ message|safe }}
+            </div>
+        {% endfor %}
+        {% block content %} {% endblock %}
+        <!-- /.container -->
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <hr>
+
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+
+
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <script>
+    function Check_files_queued (){
+                        //czyszczeneie ul z listą przetwarzanych plików
+						$('#list-files_queued').empty()
+
+                        //pobieranie jsona z listą prztwarznych plików
+						$.getJSON( "{%  url 'files_queued' %}", function( data ) {
+
+							//sprawdzamy czy lista prztwarzanych plików nie jest pusta (sprawdzamy długość)
+                            var elements =  Object.keys(data).length
+                             $("#list-files_queued").empty()
+                                $.each(data, function (key, val) {
+
+                                    $("#list-files_queued").append("<li>" + key + "</li>");
+                                });
+						});
+						};
+            function Check_files_errors (){
+                //lista błędnych
+                            $.getJSON( "{%  url 'files_errors' %}", function( data ) {
+
+                                //sprawdzamy czy lista prztwarzanych plików nie jest pusta (sprawdzamy długość)
+                                var elements = Object.keys(data).length
+                                console.log(elements+" elementów w liście YTDJango error")
+                                //lista prztworzonych
+                                $("#list-files_errors").empty()
+                                $.each(data, function (key, val) {
+
+                                    $("#list-files_errors").append("<li>" + key + "</li>");
+                                });
+                                //$({	html: items.join( "" )}).appendTo( "body" );
+                            });
+            }
+
+
+            function Check_files_converted (){
+                //lista błędnych
+                            $.getJSON( "{%  url 'files_converted' %}", function( data ) {
+
+                                //sprawdzamy czy lista prztwarzanych plików nie jest pusta (sprawdzamy długość)
+                                var elements = Object.keys(data).length
+                                console.log(elements+" elementów w liście YTDJango processed")
+                                //lista prztworzonych
+                                $("#list-files_converted").empty()
+                                $.each(data, function (key, val) {
+
+                                    $("#list-files_converted").append("<li>" + key + "</li>");
+                                });
+                                //$({	html: items.join( "" )}).appendTo( "body" );
+                            });
+            }
+             function Check_files_convert (){
+                //lista błędnych
+                            $.getJSON( "{%  url 'files_convert' %}", function( data ) {
+
+                                //sprawdzamy czy lista prztwarzanych plików nie jest pusta (sprawdzamy długość)
+                                var elements = Object.keys(data).length
+                                console.log(elements+" aktualnie prztwarzanych")
+                                //lista prztworzonych
+                                $("#list-files_convert").empty()
+                                $.each(data, function (key, val) {
+
+                                    $("#list-files_convert").append("<li>" + key + "</li>");
+                                });
+                                if (elements > 0) {
+
+                                    var progress_logo = "<img src=\"{% static 'img/loadinfo.net.gif' %}\" alt=\"ytdjango logo\" height=\"24px\">"
+                                    console.log(elements+" elementów w kolejce przetwaraznia YTDJango")
+                                    //$('#queue_length').append("&nbsp<span id=\"QueueLenghthBadge \" class=\"badge\">"+elements+"</span>")
+                                    if ($("#logo1").html() != progress_logo) {
+
+                                        console.log("Nowe przetwarzania. Zmiana logo na progress")
+                                        $('#logo1').empty()
+                                        $('#logo1').append(progress_logo)
+                                    }
+						    	} else {
+                                  var orginal_logo="<img src=\"{% static 'img/logo.png' %}\" alt=\"ytdjango logo\" height=\"24px\">"
+                                  if ($("#logo1").html() != orginal_logo) {
+                                      console.log("Brak przetwarzanych plików. Zmiana logo na oryginalne")
+                                      $('#logo1').empty()
+                                      $('#logo1').append(orginal_logo)
+                                   }
+							}
+                                //$({	html: items.join( "" )}).appendTo( "body" );
+                            });
+            }
+                    //start funkcji zaraz po załadowaniu strony:
+                    Check_files_queued();
+                    Check_files_errors();
+                    Check_files_converted();
+                    Check_files_convert();
+                    //I ustawienie odapalanai ich co okreslony interwał
+					window.setInterval(Check_files_queued, 5000);
+                    window.setInterval(Check_files_errors, 6000);
+                    window.setInterval(Check_files_converted, 6000);
+                    window.setInterval(Check_files_convert, 5500);
+    </script>
+</body>
+
+</html>
+

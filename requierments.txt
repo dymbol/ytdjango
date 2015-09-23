@@ -1,0 +1,5 @@
+Django==1.7.3
+youtube-dl==2015.06.25
+celery==3.1.18
+django-celery==3.1.16
+

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block content %}
+        <!-- Heading Row -->
+
+        <!-- Call to Action Well -->
+        <div class="row">
+        <h2>Schemat działania</h2>
+
+        <ul>
+            <h2>Konfiguracja telefonu</h2>
+            <li>Instalacja rsync for android
+                <a href="https://play.google.com/store/apps/details?id=com.botsync">https://play.google.com/store/apps/details?id=com.botsync</a>
+            </li>
+            <li>
+                Otwórz aplikację. Wybierz opcje "Config" i ustaw opcje:
+            </li>
+            <ul>
+                <li>Host: your.host</li>
+                <li>Port: 22</li>
+                <li>Username: ytdjango</li>
+                <li>Password: ****</li>
+                <li>Local Dir: /sdcard/music/ytdjango</li>
+                <li>Remote Dir: /home/ytdjango/ytdjango_out_dir/{{ user.get_username }}</li>
+                <li>Period (s): 60</li>
+                <li>Direction: Download</li>
+            </ul>
+            </li>
+
+
+        </ul>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+
+
+
+            </div>
+            <!-- /.col-md-4 -->
+
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
+
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% load template_extras %}
+
+{% block content %}
+        <!-- Heading Row -->
+
+        <!-- Call to Action Well -->
+        <div class="row">
+            <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-clock-o fa-edit"></i> Zmiana hasła
+                        </div>
+                        <div class="panel-body">
+                                <div class="form_settings">
+                                    {% csrf_token %}
+                                    <!-- http://stackoverflow.com/questions/1379247/tell-if-a-django-field-is-required-from-template -->
+                                    <form role="form" action="{% url 'user_profile' %}" method="post">{% csrf_token %}
+                                        <!-- http://stackoverflow.com/questions/1379247/tell-if-a-django-field-is-required-from-template -->
+                                        <p></p>
+                                        {% for field in form %}
+                                        <div class="form-group">
+                                            {{ form.subject.errors }}
+                                            {{ field.label_tag }}
+                                            {% if field.field.required %}
+                                            <i class="fa fa-clock-o  fa-asterisk "></i>
+                                            {% endif %}
+                                            {{ field|addcss:"form-control"}}
+                                        </div>
+                                        {% endfor %}
+                                        <p style="padding-top: 15px">
+                                            <span>&nbsp</span>
+                                            <input class="btn btn-primary" type="submit" value="Zmień"/>
+                                        </p>
+                                    </form>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-sm-3"></div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+
+
+
+            </div>
+            <!-- /.col-md-4 -->
+
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
+
+
+{% endblock %}
