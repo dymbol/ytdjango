@@ -1,2 +1,2 @@
 #!/bin/bash
-python manage.py runserver 127.0.0.1:8000
+python manage.py runserver 192.168.56.101:8000
