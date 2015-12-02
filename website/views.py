@@ -84,8 +84,9 @@ def files(request):
 def delete_file(request, file):
     path = settings.MAIN_MP3_DIR+"/"+str(request.user)+"/"+file
     os.remove(path)
-    messages.info(request, u"Usunięto plik {}".format(path))
-    print(u"Usunięto plik {}".format(path))
+    message="Deleted file {}".format(path)
+    messages.info(request, message)
+    print(message)
     return redirect('files')
 
 
