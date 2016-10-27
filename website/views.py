@@ -134,6 +134,7 @@ def files_convert(request):
     queue = dict()
     for file in converted_files:
         queue[file.url]=str(file.status)
+    message="file converted {}".format(converted_files)
     return HttpResponse(json.dumps(queue), content_type="application/json")
 
 
