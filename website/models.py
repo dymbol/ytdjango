@@ -14,7 +14,7 @@ class YT_URL(models.Model):
     #2 - przetwarzany
     #3 - przetworzony
     #4 - błąd
-
+    description = models.CharField(max_length=224)	
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.url
 
